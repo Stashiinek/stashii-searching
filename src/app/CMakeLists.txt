@@ -22,4 +22,5 @@ target_link_libraries(
     PRIVATE
       libfts
       CLI11
+      nlohmann_json::nlohmann_json
 )

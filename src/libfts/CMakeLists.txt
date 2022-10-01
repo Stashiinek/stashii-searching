@@ -3,8 +3,8 @@ set(target_name libfts)
 
 
 add_library(${target_name} STATIC
-    libfts/summ.cpp
-    libfts/summ.hpp)
+    libfts/funct.cpp
+    libfts/funct.hpp)
 
 target_include_directories(
       ${target_name}
