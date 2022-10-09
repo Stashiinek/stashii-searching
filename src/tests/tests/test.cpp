@@ -1,5 +1,5 @@
-#include "libfts/funct.hpp"
 #include <gtest/gtest.h>
+#include <libfts/funct.hpp>
 
 TEST(summTest, zeroAndZero) { EXPECT_EQ(fts::summ(0, 0), 0); }
 
