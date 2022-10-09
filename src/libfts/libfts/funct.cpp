@@ -2,22 +2,24 @@
 
 double fts::summ(double a, double b) { return a + b; }
 
-/*static_cast<char> deletePunct(static_cast<char> string) {
-  char result;
-  int count = 0;
-  while (string != '\0') {
-    if (std::ispunct(string) == 1)
-      result = +string;
-    string++;
-    count++;
+std::string fts::deletePunct(std::string str) {
+  std::string result = " ";
+  int length = 0;
+  for (auto letter : str) {
+    if (std::ispunct(static_cast<unsigned char>(letter)) == 0) {
+      result[length] = letter;
+      length++;
+    }
   }
-  return string - count;
+  return result;
 }
 
-char parse(static_cast<char> string, int min_ngram_length,
-           int max_ngram_length) {
-  char unpunctString = std::tolower(deletePunct(string));
-  int i = 0;
-  char word = "";
-  //здесь будет цикл по разделению слов для парсинга
-} */
+std::string fts::deleteSpace(std::string str) { return str; }
+
+std::string fts::parse(std::string str, int min_ngram_length,
+                       int max_ngram_length) {
+  std::cout << str << "\n";
+  std::string unpunctString = fts::deletePunct(str);
+  unpunctString = fts::deleteSpace(unpunctString);
+  return unpunctString;
+}
