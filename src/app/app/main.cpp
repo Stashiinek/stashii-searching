@@ -1,8 +1,10 @@
-#include "CLI/App.hpp"
-#include "CLI/Config.hpp"
-#include "CLI/Formatter.hpp"
 #include "libfts/funct.hpp"
-#include "nlohmann/json.hpp"
+
+#include <CLI/App.hpp>
+#include <CLI/Config.hpp>
+#include <CLI/Formatter.hpp>
+#include <nlohmann/json.hpp>
+
 #include <iostream>
 #include <map>
 

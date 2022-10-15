@@ -1,3 +1,5 @@
+cmake_minimum_required(VRESION 3.22)
+
 project(
   HelloCmake
   VERSION 1.0
