@@ -10,27 +10,31 @@ using namespace fts;
 using json = nlohmann::json;
 
 int main(int argc, char **argv) {
-  /*std::ifstream filedata;
+  std::ifstream filedata;
+  CLI::App app{"App description"};
   filedata.open("file.json");
   json data = json::parse(filedata);
+
   fts::input inputData;
+  app.add_option("--parse", inputData.text, "");
   inputData.min_ngram_length = data["min_length"].get<int>();
   inputData.max_ngram_length = data["max_length"].get<int>();
-  inputData.text = std::string(argv[1]);
-  inputData.stop_words = data["stopwords"].get<std::vector<std::string>>(); */
+  inputData.stop_words = data["stopwords"].get<std::vector<std::string>>();
+  CLI11_PARSE(app, argc, argv);
 
-  std::string be = std::string(argv[1]);
-  be = parse(be, 3, 4);
+  for (auto &be : inputData.text) {
+    be = parse(be, inputData.min_ngram_length, inputData.max_ngram_length);
+    // std::cout << be << " ";
+  }
+  std::cout << inputData.min_ngram_length << "   " << inputData.max_ngram_length
+            << "\n";
 
-  /* std::cout << inputData.min_ngram_length << "   " <<
-  inputData.max_ngram_length
-            << "\n"
-            << inputData.text << "\n";
+  deleteStops(inputData.text, inputData.stop_words);
 
-  for (auto word : inputData.stop_words) {
+  for (auto &word : inputData.text) {
     std::cout << word << "  ";
   }
-  std::cout << "\n"; */
+  std::cout << "\n";
 
   return 0;
 }
