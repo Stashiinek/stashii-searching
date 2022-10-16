@@ -21,15 +21,6 @@ std::string fts::lowerLetters(std::string str) {
   return str;
 }
 
-/* std::string deleteStopsSecondVersion(std::string &str,
-                                     std::vector<std::string> &stops) {
-  for (auto &checks : stops)
-    if (str == checks)
-      return " ";
-
-  return str;
-} */
-
 void fts::deleteStops(std::vector<std::string> &str,
                       std::vector<std::string> &stops) {
   for (auto &checkStop : stops) {
@@ -39,9 +30,30 @@ void fts::deleteStops(std::vector<std::string> &str,
   }
 }
 
-std::string fts::parse(std::string str, int min_ngram_length,
-                       int max_ngram_length) {
+std::string fts::restring(std::string str) {
   std::string unpunctString = fts::deletePunct(str);
   unpunctString = fts::lowerLetters(unpunctString);
   return unpunctString;
+}
+
+std::vector<std::vector<fts::ngrams>>
+fts::parse(std::vector<std::string> str, int &min_length, int &max_length) {
+  std::vector<std::vector<fts::ngrams>> result(str.size());
+  int otstup = 0, k = 0, count = min_length, adekvatno = max_length;
+  int actual_max = max_length;
+  std::string ekarniy_babay = str.at(0);
+  for (int i = 0; i != str.size(); i++) {
+    k = 0;
+    ekarniy_babay = str.at(i);
+    actual_max =
+        ekarniy_babay.size() > max_length ? ekarniy_babay.size() : max_length;
+    while (count < adekvatno) {
+      result.at(i).at(k).peach = ekarniy_babay.substr(otstup, otstup + count);
+      result.at(i).at(k).index = i;
+      otstup++;
+      k++;
+    }
+  }
+
+  return result;
 }

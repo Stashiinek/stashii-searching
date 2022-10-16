@@ -6,7 +6,6 @@
 #include <iostream>
 #include <map>
 
-using namespace fts;
 using json = nlohmann::json;
 
 int main(int argc, char **argv) {
@@ -23,17 +22,20 @@ int main(int argc, char **argv) {
   CLI11_PARSE(app, argc, argv);
 
   for (auto &be : inputData.text) {
-    be = parse(be, inputData.min_ngram_length, inputData.max_ngram_length);
+    be = fts::restring(be);
     // std::cout << be << " ";
   }
   std::cout << inputData.min_ngram_length << "   " << inputData.max_ngram_length
             << "\n";
 
-  deleteStops(inputData.text, inputData.stop_words);
+  fts::deleteStops(inputData.text, inputData.stop_words);
+  std::vector<std::vector<fts::ngrams>> outputData(inputData.text.size());
 
   for (auto &word : inputData.text) {
     std::cout << word << "  ";
   }
+  outputData = fts::parse(inputData.text, inputData.min_ngram_length,
+                          inputData.max_ngram_length);
   std::cout << "\n";
 
   return 0;
