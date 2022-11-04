@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
   json data = json::parse(filedata);
 
   fts::input inputData;
-  app.add_option("--parse", inputData.text, "");
+  app.add_option("--parse", inputData.text);
   inputData.min_ngram_length = data["min_length"].get<int>();
   inputData.max_ngram_length = data["max_length"].get<int>();
   inputData.stop_words = data["stopwords"].get<std::vector<std::string>>();
@@ -29,14 +29,26 @@ int main(int argc, char **argv) {
             << "\n";
 
   fts::deleteStops(inputData.text, inputData.stop_words);
-  std::vector<std::vector<fts::ngrams>> outputData(inputData.text.size());
+  std::vector<fts::ngrams> outputData;
+  //(
+  //  inputData.text.size(), std::vector<fts::ngrams>(10));
 
   for (auto &word : inputData.text) {
-    std::cout << word << "  ";
+    if (!word.empty())
+      std::cout << word << "  ";
   }
   outputData = fts::parse(inputData.text, inputData.min_ngram_length,
                           inputData.max_ngram_length);
   std::cout << "\n";
+
+  for (auto &i : outputData) {
+    for (auto &k : i.peach) {
+      if (!(k.empty()))
+        std::cout << k << "  ";
+    }
+    if (!(i.peach.at(0).empty()))
+      std::cout << i.index << "\n";
+  }
 
   return 0;
 }

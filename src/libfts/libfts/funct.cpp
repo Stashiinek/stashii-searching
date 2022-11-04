@@ -3,7 +3,7 @@
 double fts::summ(double a, double b) { return a + b; }
 
 std::string fts::deletePunct(std::string str) {
-  std::string result = " ";
+  std::string result = "";
   for (auto letter : str) {
     // std::cout << std::ispunct(letter) << "\n";
     if (std::ispunct(letter) == 0) {
@@ -24,9 +24,10 @@ std::string fts::lowerLetters(std::string str) {
 void fts::deleteStops(std::vector<std::string> &str,
                       std::vector<std::string> &stops) {
   for (auto &checkStop : stops) {
-    auto be = std::remove(str.begin(), str.end(), checkStop);
-    if (be != str.end())
-      str.erase(be, str.end());
+    for (auto &word : str) {
+      if (word.compare(checkStop) == 0)
+        word.erase();
+    }
   }
 }
 
@@ -36,22 +37,23 @@ std::string fts::restring(std::string str) {
   return unpunctString;
 }
 
-std::vector<std::vector<fts::ngrams>>
-fts::parse(std::vector<std::string> str, int &min_length, int &max_length) {
-  std::vector<std::vector<fts::ngrams>> result(str.size());
-  int otstup = 0, k = 0, count = min_length, adekvatno = max_length;
-  int actual_max = max_length;
-  std::string ekarniy_babay = str.at(0);
-  for (int i = 0; i != str.size(); i++) {
-    k = 0;
-    ekarniy_babay = str.at(i);
-    actual_max =
-        ekarniy_babay.size() > max_length ? ekarniy_babay.size() : max_length;
-    while (count < adekvatno) {
-      result.at(i).at(k).peach = ekarniy_babay.substr(otstup, otstup + count);
-      result.at(i).at(k).index = i;
-      otstup++;
-      k++;
+std::vector<fts::ngrams> fts::parse(std::vector<std::string> &str,
+                                    int &min_length, int &max_length) {
+  std::vector<fts::ngrams> result(str.size());
+  int actual_max = max_length, actual_min = min_length;
+
+  for (std::size_t i = 0; i < str.size(); i++) {
+    fts::ngrams local_vector;
+    local_vector.index = i;
+    actual_max = std::min(static_cast<int>(str.at(i).size()), max_length);
+    actual_min = std::min(static_cast<int>(str.at(i).size()), min_length);
+
+    for (int ng_len = actual_min; ng_len <= actual_max; ng_len++) {
+      local_vector.peach.push_back(str.at(i).substr(0, ng_len));
+    }
+    if (!local_vector.peach.empty()) {
+      result.at(i).peach = local_vector.peach;
+      result.at(i).index = local_vector.index;
     }
   }
 
