@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 cmake_minimum_required(VRESION 3.22)
+=======
+cmake_minimum_required(VERSION 3.22)
+>>>>>>> lab-2
 
 project(
   HelloCmake
