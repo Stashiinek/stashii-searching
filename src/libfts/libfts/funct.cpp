@@ -1,8 +1,10 @@
 #include "libfts/funct.hpp"
 
-double fts::summ(double a, double b) { return a + b; }
+namespace fts {
 
-std::string fts::deletePunct(std::string str) {
+double summ(double a, double b) { return a + b; }
+
+std::string deletePunct(std::string str) {
   std::string result = "";
   for (auto letter : str) {
     // std::cout << std::ispunct(letter) << "\n";
@@ -14,15 +16,15 @@ std::string fts::deletePunct(std::string str) {
   return result;
 }
 
-std::string fts::lowerLetters(std::string str) {
+std::string lowerLetters(std::string &str) {
   for (auto &letter : str) {
     letter = std::tolower(letter);
   }
   return str;
 }
 
-void fts::deleteStops(std::vector<std::string> &str,
-                      std::vector<std::string> &stops) {
+void deleteStops(std::vector<std::string> &str,
+                 std::vector<std::string> &stops) {
   for (auto &checkStop : stops) {
     for (auto &word : str) {
       if (word.compare(checkStop) == 0)
@@ -31,14 +33,14 @@ void fts::deleteStops(std::vector<std::string> &str,
   }
 }
 
-std::string fts::restring(std::string str) {
-  std::string unpunctString = fts::deletePunct(str);
-  unpunctString = fts::lowerLetters(unpunctString);
+std::string restring(std::string str) {
+  std::string unpunctString = deletePunct(str);
+  unpunctString = lowerLetters(unpunctString);
   return unpunctString;
 }
 
-std::vector<fts::ngrams> fts::parse(std::vector<std::string> &str,
-                                    int &min_length, int &max_length) {
+std::vector<fts::ngrams> parse(std::vector<std::string> &str, int &min_length,
+                               int &max_length) {
   std::vector<fts::ngrams> result(str.size());
   int actual_max = max_length, actual_min = min_length;
 
@@ -59,3 +61,4 @@ std::vector<fts::ngrams> fts::parse(std::vector<std::string> &str,
 
   return result;
 }
+} // namespace fts
