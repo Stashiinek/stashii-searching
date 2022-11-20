@@ -4,7 +4,7 @@ namespace fts {
 
 double summ(double a, double b) { return a + b; }
 
-std::string deletePunct(std::string str) {
+std::string deletePunct(std::string &str) {
   std::string result = "";
   for (auto letter : str) {
     // std::cout << std::ispunct(letter) << "\n";
@@ -33,7 +33,7 @@ void deleteStops(std::vector<std::string> &str,
   }
 }
 
-std::string restring(std::string str) {
+std::string restring(std::string &str) {
   std::string unpunctString = deletePunct(str);
   unpunctString = lowerLetters(unpunctString);
   return unpunctString;
@@ -60,5 +60,29 @@ std::vector<fts::ngrams> parse(std::vector<std::string> &str, int &min_length,
   }
 
   return result;
+}
+
+std::vector<ngrams> parsing(inData *inputData) {
+  fts::deleteStops(inputData->text, inputData->stop_words);
+  std::vector<fts::ngrams> outputData;
+
+  for (auto &word : inputData->text) {
+    if (!word.empty())
+      std::cout << word << "  ";
+  }
+  outputData = parse(inputData->text, inputData->min_ngram_length,
+                     inputData->max_ngram_length);
+  std::cout << "\n";
+
+  for (auto &i : outputData) {
+    for (auto &k : i.peach) {
+      if (!(k.empty()))
+        std::cout << k << "  ";
+    }
+    if (!(i.peach.at(0).empty()))
+      std::cout << i.index << "\n";
+  }
+
+  return outputData;
 }
 } // namespace fts

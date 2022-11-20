@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
   filedata.open("file.json");
   json data = json::parse(filedata);
 
-  fts::input inputData;
+  fts::inData inputData;
   app.add_option("--parse", inputData.text);
   inputData.min_ngram_length = data["min_length"].get<int>();
   inputData.max_ngram_length = data["max_length"].get<int>();
@@ -29,27 +29,9 @@ int main(int argc, char **argv) {
   std::cout << inputData.min_ngram_length << "   " << inputData.max_ngram_length
             << "\n";
 
-  fts::deleteStops(inputData.text, inputData.stop_words);
   std::vector<fts::ngrams> outputData;
-  //(
-  //  inputData.text.size(), std::vector<fts::ngrams>(10));
-
-  for (auto &word : inputData.text) {
-    if (!word.empty())
-      std::cout << word << "  ";
-  }
-  outputData = fts::parse(inputData.text, inputData.min_ngram_length,
-                          inputData.max_ngram_length);
-  std::cout << "\n";
-
-  for (auto &i : outputData) {
-    for (auto &k : i.peach) {
-      if (!(k.empty()))
-        std::cout << k << "  ";
-    }
-    if (!(i.peach.at(0).empty()))
-      std::cout << i.index << "\n";
-  }
+  outputData = fts::parsing(&inputData);
+  // there will be another vizovy of functions,,,,
 
   return 0;
 }

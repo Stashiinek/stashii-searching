@@ -1,3 +1,4 @@
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -7,17 +8,20 @@ struct ngrams {
   int index;
 };
 double summ(double a, double b);
-std::string deletePunct(std::string str);
+std::string deletePunct(std::string &str);
 void deleteStops(std::vector<std::string> &str,
                  std::vector<std::string> &stops);
 std::string lowerLetters(std::string &str);
-std::string restring(std::string str);
+std::string restring(std::string &str);
 std::vector<fts::ngrams> parse(std::vector<std::string> &str, int &min_length,
                                int &max_length);
-struct input {
+struct inData {
   int min_ngram_length;
   int max_ngram_length;
   std::vector<std::string> text;
   std::vector<std::string> stop_words;
 };
+
+std::vector<ngrams> parsing(inData *inputData);
+
 } // namespace fts
