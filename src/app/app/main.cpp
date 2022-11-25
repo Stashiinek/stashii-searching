@@ -10,7 +10,7 @@
 using json = nlohmann::json;
 
 int main(int argc, char **argv) {
-  std::ifstream filedata;
+  /*std::ifstream filedata;
   CLI::App app{"App description"};
   filedata.open("file.json");
   json data = json::parse(filedata);
@@ -25,12 +25,22 @@ int main(int argc, char **argv) {
   for (auto &be : inputData.text) {
     be = fts::restring(be);
     // std::cout << be << " ";
-  }
-  std::cout << inputData.min_ngram_length << "   " << inputData.max_ngram_length
-            << "\n";
+  } */
 
-  std::vector<fts::ngrams> outputData;
-  outputData = fts::parsing(&inputData);
+  std::string be = "Hello, this is a test";
+
+  std::vector<std::string> vec = fts::splitString(be);
+
+  for (auto &i : vec) {
+    std::cout << i << "\n";
+  }
+
+  // std::cout << inputData.min_ngram_length << "   " <<
+  // inputData.max_ngram_length
+  //          << "\n";
+
+  // std::vector<fts::ngrams> outputData;
+  // outputData = fts::littlemain(&inputData);
   // there will be another vizovy of functions,,,,
 
   return 0;

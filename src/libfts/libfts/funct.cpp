@@ -4,6 +4,21 @@ namespace fts {
 
 double summ(double a, double b) { return a + b; }
 
+bool ifspace(char i) { return std::isspace(i) > 0; }
+bool ifalpha(char i) { return std::isalpha(i) > 0; }
+
+std::vector<std::string> splitString(const std::string str) {
+  auto start = std::find_if(str.begin(), str.end(), ifalpha);
+  auto end = start;
+  std::vector<std::string> words;
+  while (start != str.end()) {
+    end = std::find_if(start, str.end(), ifspace;
+    words.push_back(str.substr(start - str.begin(), end - start));
+    start = std::find_if(end, str.end(), ifalpha);
+  }
+  return words;
+}
+
 std::string deletePunct(std::string &str) {
   std::string result = "";
   for (auto letter : str) {
@@ -49,6 +64,7 @@ std::vector<fts::ngrams> parse(std::vector<std::string> &str, int &min_length,
     local_vector.index = i;
     actual_max = std::min(static_cast<int>(str.at(i).size()), max_length);
     actual_min = std::min(static_cast<int>(str.at(i).size()), min_length);
+    local_vector.document = str.at(i);
 
     for (int ng_len = actual_min; ng_len <= actual_max; ng_len++) {
       local_vector.peach.push_back(str.at(i).substr(0, ng_len));
@@ -56,33 +72,44 @@ std::vector<fts::ngrams> parse(std::vector<std::string> &str, int &min_length,
     if (!local_vector.peach.empty()) {
       result.at(i).peach = local_vector.peach;
       result.at(i).index = local_vector.index;
+      result.at(i).document = local_vector.document;
     }
   }
 
   return result;
 }
 
-std::vector<ngrams> parsing(inData *inputData) {
-  fts::deleteStops(inputData->text, inputData->stop_words);
+std::vector<ngrams> parsing(inData *inputData, std::vector<std::string> words) {
+  fts::deleteStops(splitText, inputData->stop_words);
   std::vector<fts::ngrams> outputData;
 
-  for (auto &word : inputData->text) {
-    if (!word.empty())
-      std::cout << word << "  ";
-  }
-  outputData = parse(inputData->text, inputData->min_ngram_length,
-                     inputData->max_ngram_length);
+  outputData =
+      parse(words, inputData->min_ngram_length, inputData->max_ngram_length);
   std::cout << "\n";
 
-  for (auto &i : outputData) {
+  /*for (auto &i : outputData) {
     for (auto &k : i.peach) {
       if (!(k.empty()))
         std::cout << k << "  ";
     }
     if (!(i.peach.at(0).empty()))
       std::cout << i.index << "\n";
-  }
+  } */
 
   return outputData;
 }
+
+namespace ind {
+void IndexBuilder::add_document(int document_id, inData *inputData) {
+  std::vector<std::string> splitText = splitString(inputData->text);
+  std::vector<ngrams> terms = parsing(inData, splitText);
+
+  index.docs.insert(std::make_pair(document_id, inputData->text));
+
+  // std::map<std::size_t, std::string> docs;
+  // std::multimap<std::string, entry_data> entires;
+}
+
+void TextUndexWriter::write(std::string path, int index) {}
+} // namespace ind
 } // namespace fts
