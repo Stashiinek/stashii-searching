@@ -2,3 +2,5 @@ build
 *.a
 *.o
 *.gch
+.vscode
+

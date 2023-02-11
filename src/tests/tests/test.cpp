@@ -14,7 +14,7 @@ TEST(summTest, parsingOne) {
   filedata.open("file.json");
   json data = json::parse(filedata);
 
-  testingOne.text = {"Hel/lo!", "This", "is", "the", "test."};
+  testingOne.text = {"Hel/lo! This is the test."};
   testingOne.stop_words = data["stopwords"].get<std::vector<std::string>>();
   testingOne.max_ngram_length = 5;
   testingOne.min_ngram_length = 2;
@@ -26,11 +26,12 @@ TEST(summTest, parsingOne) {
   expectedResult.at(4).index = 4;
   expectedResult.at(4).peach = {"te", "tes", "test"};
 
-  for (auto &be : testingOne.text) {
-    be = fts::restring(be);
-  }
+  testingOne.text = fts::restring(testingOne.text);
+
+  std::vector<std::string> vec = fts::splitString(testingOne.text);
+
   std::vector<fts::ngrams> result;
-  result = fts::parsing(&testingOne);
+  result = fts::parsing(&testingOne, vec);
 
   EXPECT_EQ(result.at(0).peach, expectedResult.at(0).peach);
   EXPECT_EQ(result.at(4).peach, expectedResult.at(4).peach);
@@ -42,7 +43,7 @@ TEST(summTest, parsingAnother) {
   filedata.open("file.json");
   json data = json::parse(filedata);
 
-  testingOne.text = {"i", "am", "little", "meow"};
+  testingOne.text = {"i am little meow"};
   testingOne.stop_words = data["stopwords"].get<std::vector<std::string>>();
   testingOne.max_ngram_length = 5;
   testingOne.min_ngram_length = 2;
@@ -60,11 +61,12 @@ TEST(summTest, parsingAnother) {
   expectedResult.at(3).index = 3;
   expectedResult.at(3).peach = {"me", "meo", "meow"};
 
+  testingOne.text = fts::restring(testingOne.text);
+
+  std::vector<std::string> vec = fts::splitString(testingOne.text);
+
   std::vector<fts::ngrams> result;
-  for (auto &be : testingOne.text) {
-    be = fts::restring(be);
-  }
-  result = fts::parsing(&testingOne);
+  result = fts::parsing(&testingOne, vec);
 
   EXPECT_EQ(result.at(0).peach, expectedResult.at(0).peach);
   EXPECT_EQ(result.at(1).peach, expectedResult.at(1).peach);

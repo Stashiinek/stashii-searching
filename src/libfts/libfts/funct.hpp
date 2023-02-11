@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <unordered_map>
 #include <iostream>
 #include <map>
 #include <string>
@@ -24,12 +25,13 @@ std::vector<fts::ngrams> parse(std::vector<std::string> &str, int &min_length,
 struct inData {
   int min_ngram_length;
   int max_ngram_length;
-  std::string text;
+  std::vector<std::string> text;
   std::vector<std::string> stop_words;
 };
-std::vector<ngrams> parsing(inData *inputData);
 
-std::vector<ngrams> littlemain(inData *inputData);
+std::vector<ngrams> parsing(inData *inputData, std::vector<std::string> words);
+
+//std::vector<ngrams> littlemain(inData *inputData);
 
 namespace ind {
 struct term_data {
@@ -41,18 +43,26 @@ struct entry_data {
   std::string term;
   std::vector<term_data> term_docs;
 };
+std::vector<std::pair<int, int>> entry_search(std::vector<std::vector<ngrams>> &terms, std::vector<ngrams> &check);
+
 class Index {
 public:
   std::map<std::size_t, std::string> docs;
-  std::multimap<std::string, entry_data> entires;
+  //std::multimap<std::string, entry_data> entires;
+  std::unordered_map<std::string, std::vector<struct rev_ind>> rev_docs;
 };
 
 class IndexBuilder {
 public:
-  void add_document(int document_id, std::string text);
+  void add_document(int document_id, inData *inputData);
 
 private:
   Index index;
+  struct rev_ind{
+    int doc_id;
+    std::vector<std::pair<int, int>> entry;
+  };
+  typedef struct rev_ind rev_ind;
 };
 
 class TextUndexWriter {

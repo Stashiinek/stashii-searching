@@ -1,5 +1,7 @@
 #include "libfts/funct.hpp"
 
+#include <picosha2.h>
+
 namespace fts {
 
 double summ(double a, double b) { return a + b; }
@@ -12,7 +14,7 @@ std::vector<std::string> splitString(const std::string str) {
   auto end = start;
   std::vector<std::string> words;
   while (start != str.end()) {
-    end = std::find_if(start, str.end(), ifspace;
+    end = std::find_if(start, str.end(), ifspace);
     words.push_back(str.substr(start - str.begin(), end - start));
     start = std::find_if(end, str.end(), ifalpha);
   }
@@ -80,7 +82,7 @@ std::vector<fts::ngrams> parse(std::vector<std::string> &str, int &min_length,
 }
 
 std::vector<ngrams> parsing(inData *inputData, std::vector<std::string> words) {
-  fts::deleteStops(splitText, inputData->stop_words);
+  fts::deleteStops(words, inputData->stop_words);
   std::vector<fts::ngrams> outputData;
 
   outputData =
@@ -99,12 +101,46 @@ std::vector<ngrams> parsing(inData *inputData, std::vector<std::string> words) {
   return outputData;
 }
 
-namespace ind {
-void IndexBuilder::add_document(int document_id, inData *inputData) {
-  std::vector<std::string> splitText = splitString(inputData->text);
-  std::vector<ngrams> terms = parsing(inData, splitText);
+void mainfunct(inData *inputData, std::vector<std::vector<std::string>> words){
+  std::vector<std::vector<ngrams>> terms;
+  for (auto be : words)
+    terms.push_back(fts::parsing(inputData, be));
 
-  index.docs.insert(std::make_pair(document_id, inputData->text));
+  std::vector<std::vector<std::pair<int, int>>> rev_entr;
+  int ind, entr;
+  for (int i = 0; i < words.size(); i++){
+    std::vector<ngrams> wordTerms = parsing(inputData, words.at(i));
+    std::vector<std::pair<int, int>> pairs = ind::entry_search(terms, wordTerms);
+    for (auto be : pairs)
+      rev_entr.at(i).push_back(be);
+  }
+}
+
+namespace ind {
+
+int meow_search(std::vector<std::vector<ngrams>> &terms, std::vector<std::string> &meow_ng){
+  int meow_result = 0;
+  for ()
+
+  return meow_result;
+}
+std::vector<std::pair<int, int>> entry_search(std::vector<std::vector<ngrams>> &terms, std::vector<ngrams> &check){
+  std::vector<std::pair<int, int>> result;
+  for (auto be : check){
+    int meow_ret = meow_search(terms, be.peach);
+  }
+
+  return result;
+}
+
+void IndexBuilder::add_document(int document_id, inData *inputData) {
+  std::vector<std::string> splitText = splitString(inputData->text.at(document_id));
+  std::vector<ngrams> terms = parsing(inputData, splitText);
+  //std::vector<int> ntry =
+
+  index.docs.insert(std::make_pair(document_id, inputData->text.at(document_id)));
+
+  // any STL sequantial container (vector, list, dequeue...)
 
   // std::map<std::size_t, std::string> docs;
   // std::multimap<std::string, entry_data> entires;
