@@ -27,10 +27,6 @@ int main(int argc, char **argv) {
     // std::cout << be << " ";
   } */
 
-  std::string be = "Hello, this is a test";
-
-  std::vector<std::string> vec = fts::splitString(be);
-
   for (auto &i : vec) {
     std::cout << i << "\n";
   }

@@ -56,14 +56,14 @@ std::string restring(std::string &str) {
   return unpunctString;
 }
 
-std::vector<fts::ngrams> parse(std::vector<std::string> &str, int &min_length,
+std::vector<fts::ngrams> parse(std::vector<std::string> &str, std::size_t &docId, int &min_length,
                                int &max_length) {
   std::vector<fts::ngrams> result(str.size());
   int actual_max = max_length, actual_min = min_length;
 
   for (std::size_t i = 0; i < str.size(); i++) {
     fts::ngrams local_vector;
-    local_vector.index = i;
+    local_vector.index = docId;
     actual_max = std::min(static_cast<int>(str.at(i).size()), max_length);
     actual_min = std::min(static_cast<int>(str.at(i).size()), min_length);
     local_vector.document = str.at(i);
@@ -81,12 +81,12 @@ std::vector<fts::ngrams> parse(std::vector<std::string> &str, int &min_length,
   return result;
 }
 
-std::vector<ngrams> parsing(inData *inputData, std::vector<std::string> words) {
-  fts::deleteStops(words, inputData->stop_words);
+std::vector<ngrams> parsing(inData &inputData, std::vector<std::string> words, std::size_t &ids) {
+  fts::deleteStops(words, inputData.stop_words);
   std::vector<fts::ngrams> outputData;
 
   outputData =
-      parse(words, inputData->min_ngram_length, inputData->max_ngram_length);
+      parse(words, ids, inputData.min_ngram_length, inputData.max_ngram_length);
   std::cout << "\n";
 
   /*for (auto &i : outputData) {
@@ -101,49 +101,78 @@ std::vector<ngrams> parsing(inData *inputData, std::vector<std::string> words) {
   return outputData;
 }
 
-void mainfunct(inData *inputData, std::vector<std::vector<std::string>> words){
-  std::vector<std::vector<ngrams>> terms;
-  for (auto be : words)
-    terms.push_back(fts::parsing(inputData, be));
-
-  std::vector<std::vector<std::pair<int, int>>> rev_entr;
-  int ind, entr;
-  for (int i = 0; i < words.size(); i++){
-    std::vector<ngrams> wordTerms = parsing(inputData, words.at(i));
-    std::vector<std::pair<int, int>> pairs = ind::entry_search(terms, wordTerms);
-    for (auto be : pairs)
-      rev_entr.at(i).push_back(be);
-  }
-}
-
 namespace ind {
 
-int meow_search(std::vector<std::vector<ngrams>> &terms, std::vector<std::string> &meow_ng){
-  int meow_result = 0;
-  for ()
-
-  return meow_result;
-}
-std::vector<std::pair<int, int>> entry_search(std::vector<std::vector<ngrams>> &terms, std::vector<ngrams> &check){
-  std::vector<std::pair<int, int>> result;
+/*std::vector<entry_pair> entry_search(std::vector<std::vector<ngrams>> &terms, std::vector<ngrams> &check){
+  std::vector<entry_pair> result;
+  entry_pair meow_pair;
   for (auto be : check){
-    int meow_ret = meow_search(terms, be.peach);
+    for (int i = 0; i < terms.size(); i++){
+      int meow_res = meow_search(terms.at(i), be.peach);
+      if (meow_res < 0){
+        meow_pair.doc_id = i;
+        meow_pair.countOfEntries = meow_res;
+      }
+    }
   }
 
   return result;
+} */
+
+/*Index index;
+  inData config;
+  void find_entry();
+*/
+
+void IndexBuilder::set_config(inData &inputData){
+  config = inputData;
 }
 
-void IndexBuilder::add_document(int document_id, inData *inputData) {
-  std::vector<std::string> splitText = splitString(inputData->text.at(document_id));
-  std::vector<ngrams> terms = parsing(inputData, splitText);
-  //std::vector<int> ntry =
+void IndexBuilder::findTerm(std::string &term){
 
-  index.docs.insert(std::make_pair(document_id, inputData->text.at(document_id)));
+}
 
-  // any STL sequantial container (vector, list, dequeue...)
+void IndexBuilder::add_term(std::size_t doc_id, std::size_t pos, std::string &term){
 
-  // std::map<std::size_t, std::string> docs;
-  // std::multimap<std::string, entry_data> entires;
+  // std::unordered_map<std::string, entry_data> rev_docs;
+
+  std::vector<unsigned char> hash(picosha2::k_digest_size);
+  picosha2::hash256(term.begin(), term.end(), hash.begin(), hash.end());   //спросить у паши как брать первые три байта хэша
+  std::string hex_str = picosha2::bytes_to_hex_string(hash.begin(), hash.end());
+  auto find_hex = index.rev_docs.find(hex_str);
+
+  if (find_hex == index.rev_docs.end()){
+    term_data meow_pos_entries;
+    meow_pos_entries.doc_id = doc_id;
+    meow_pos_entries.pos.push_back(pos);
+
+    entry_data meow_entries;
+    meow_entries.term = term;
+    meow_entries.term_docs.push_back(meow_pos_entries);
+
+    index.rev_docs.insert(std::make_pair(hex_str, meow_entries)); //добавить новый экземпляр в мапу
+  }
+  else {
+    //ковыряемся в уже существующих полях
+    //евгений сергеевич эти комментарии только для меня честно не смотрите на их наличие
+    term_data meow_pos_entries;
+    meow_pos_entries.doc_id = doc_id;
+    meow_pos_entries.pos.push_back(pos);
+
+    find_hex->second.term_docs.push_back(meow_pos_entries);
+  }
+}
+
+void IndexBuilder::add_document(std::size_t document_id, std::string &text) {
+  std::vector<std::string> splitText = splitString(text);
+  std::vector<ngrams> terms = parsing(config, splitText, document_id);
+
+  index.docs.insert(std::make_pair(document_id, text));
+  for (std::size_t i = 0; i < terms.size(); i++){
+    for (auto be : terms.at(i).peach){
+      add_term(document_id, i, be);
+    }
+  }
 }
 
 void TextUndexWriter::write(std::string path, int index) {}
