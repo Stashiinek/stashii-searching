@@ -1,4 +1,4 @@
-#include "libfts/funct.hpp"
+#include <libfts/funct.hpp>
 
 #include <picosha2.h>
 
@@ -103,33 +103,8 @@ std::vector<ngrams> parsing(inData &inputData, std::vector<std::string> words, s
 
 namespace ind {
 
-/*std::vector<entry_pair> entry_search(std::vector<std::vector<ngrams>> &terms, std::vector<ngrams> &check){
-  std::vector<entry_pair> result;
-  entry_pair meow_pair;
-  for (auto be : check){
-    for (int i = 0; i < terms.size(); i++){
-      int meow_res = meow_search(terms.at(i), be.peach);
-      if (meow_res < 0){
-        meow_pair.doc_id = i;
-        meow_pair.countOfEntries = meow_res;
-      }
-    }
-  }
-
-  return result;
-} */
-
-/*Index index;
-  inData config;
-  void find_entry();
-*/
-
 void IndexBuilder::set_config(inData &inputData){
   config = inputData;
-}
-
-void IndexBuilder::findTerm(std::string &term){
-
 }
 
 void IndexBuilder::add_term(std::size_t doc_id, std::size_t pos, std::string &term){
@@ -138,7 +113,7 @@ void IndexBuilder::add_term(std::size_t doc_id, std::size_t pos, std::string &te
 
   std::vector<unsigned char> hash(picosha2::k_digest_size);
   picosha2::hash256(term.begin(), term.end(), hash.begin(), hash.end());   //спросить у паши как брать первые три байта хэша
-  std::string hex_str = picosha2::bytes_to_hex_string(hash.begin(), hash.end());
+  std::string hex_str = picosha2::bytes_to_hex_string(hash.begin(), hash.begin()+6);  //как видим я спросила
   auto find_hex = index.rev_docs.find(hex_str);
 
   if (find_hex == index.rev_docs.end()){
@@ -155,11 +130,24 @@ void IndexBuilder::add_term(std::size_t doc_id, std::size_t pos, std::string &te
   else {
     //ковыряемся в уже существующих полях
     //евгений сергеевич эти комментарии только для меня честно не смотрите на их наличие
-    term_data meow_pos_entries;
-    meow_pos_entries.doc_id = doc_id;
-    meow_pos_entries.pos.push_back(pos);
+    //а то я забуду какую фигню я тут написала :'(
 
-    find_hex->second.term_docs.push_back(meow_pos_entries);
+    auto founded_term =
+      std::find_if(find_hex->second.term_docs.begin(), find_hex->second.term_docs.end(),
+                   [doc_id](term_data &data) { return data.doc_id == doc_id; });
+
+    if (founded_term == find_hex->second.term_docs.end()){
+      term_data meow_pos_entries;
+      meow_pos_entries.doc_id = doc_id;
+      meow_pos_entries.pos.push_back(pos);
+
+      find_hex->second.term_docs.push_back(meow_pos_entries);
+    }
+    else {
+      if (std::find(founded_term->pos.begin(), founded_term->pos.end(),
+          pos) == founded_term->pos.end())
+        founded_term->pos.push_back(pos);
+    }
   }
 }
 
@@ -175,6 +163,43 @@ void IndexBuilder::add_document(std::size_t document_id, std::string &text) {
   }
 }
 
-void TextUndexWriter::write(std::string path, int index) {}
+Index& IndexBuilder::retIndex(){
+  return index;
+}
+
+void TextIndexWriter::write(std::string const &path, Index &miau) {
+  std::ofstream file;
+  std::string fpath;
+
+  std::string doc_path = path + "/index/docs/";
+  std::string entry_path = path + "/index/entries/";
+
+
+
+  std::filesystem::create_directories(doc_path);
+  std::filesystem::create_directories(entry_path);
+
+  for (auto &be : miau.docs){
+    fpath = doc_path + "/" + std::to_string(be.first) + ".txt";
+    file.open(fpath);
+
+    file << be.second;
+    file.close();
+  }
+
+  for (auto &be: miau.rev_docs){
+    fpath = entry_path + "/" + be.first + ".txt";
+    file.open(fpath);
+    file << be.first << " " << be.second.term_docs.size() << " ";
+
+    for (int i = 0; i < be.second.term_docs.size(); i++){
+      file << be.second.term_docs.at(i).doc_id << " " << be.second.term_docs.at(i).pos.size() << " ";
+      for (int k = 0; k < be.second.term_docs.at(i).pos.size(); k++){
+        file << be.second.term_docs.at(i).pos.at(k) << " ";
+      }
+    }
+    file.close();
+  }
+}
 } // namespace ind
 } // namespace fts

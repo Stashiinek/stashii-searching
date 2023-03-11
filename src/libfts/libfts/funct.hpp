@@ -1,7 +1,8 @@
 #include <algorithm>
 #include <unordered_map>
 #include <iostream>
-#include <map>
+#include <fstream>
+#include <filesystem>
 #include <string>
 #include <vector>
 
@@ -58,6 +59,7 @@ class IndexBuilder {
 public:
   void set_config(inData &inputData);
   void add_document(std::size_t document_id, std::string &text);
+  Index& retIndex();
 
 private:
   Index index;
@@ -67,9 +69,9 @@ private:
   //std::unordered_map<std::string, entry_data> find_entry(std::string &checking, std::vector<ngrams> &terms);
 };
 
-class TextUndexWriter {
+class TextIndexWriter {
 public:
-  void write(std::string path, int index);
+  void write(std::string const &path, Index &miau);
 };
 } // namespace ind
 
