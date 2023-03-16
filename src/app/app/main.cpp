@@ -34,12 +34,13 @@ int main(int argc, char **argv) {
   //std::vector<fts::ngrams> miau = parsing(inputData, text, doc_id);
 
   fts::ind::IndexBuilder snacks;    //в этот момент я не знала как назвать экземпляр класса и ела чипсеки
+  snacks.set_config(inputData);
   snacks.add_document(doc_id, document_data);
   fts::ind::Index &testIndex = snacks.retIndex();
 
   fts::ind::TextIndexWriter cringe;
-  std::string const path = "/Документы/dwx_code/5 семестр/стп/fts-Stashiinek";
-  cringe.write(path, testIndex);
+  //std::string const path = "/home/stashiinek/Документы/говнокод/стп/fts-Stashiinek";
+  cringe.write(testIndex);  //пофиксить запись обратного индекса в Index
 
 /*struct ngrams {
   std::vector<std::string> peach; // idk how to name it, ehhhhh,,, ngrams????

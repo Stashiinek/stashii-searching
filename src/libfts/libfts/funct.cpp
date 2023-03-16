@@ -69,7 +69,7 @@ std::vector<fts::ngrams> parse(std::vector<std::string> &str, std::size_t &docId
     local_vector.document = str.at(i);
 
     for (int ng_len = actual_min; ng_len <= actual_max; ng_len++) {
-      local_vector.peach.push_back(str.at(i).substr(0, ng_len));
+      local_vector.peach.push_back(str.at(i).substr(0, ng_len)); //почему то не работает
     }
     if (!local_vector.peach.empty()) {
       result.at(i).peach = local_vector.peach;
@@ -108,12 +108,9 @@ void IndexBuilder::set_config(inData &inputData){
 }
 
 void IndexBuilder::add_term(std::size_t doc_id, std::size_t pos, std::string &term){
-
-  // std::unordered_map<std::string, entry_data> rev_docs;
-
   std::vector<unsigned char> hash(picosha2::k_digest_size);
-  picosha2::hash256(term.begin(), term.end(), hash.begin(), hash.end());   //спросить у паши как брать первые три байта хэша
-  std::string hex_str = picosha2::bytes_to_hex_string(hash.begin(), hash.begin()+6);  //как видим я спросила
+  picosha2::hash256(term.begin(), term.end(), hash.begin(), hash.end());
+  std::string hex_str = picosha2::bytes_to_hex_string(hash.begin(), hash.begin()+6);
   auto find_hex = index.rev_docs.find(hex_str);
 
   if (find_hex == index.rev_docs.end()){
@@ -158,7 +155,7 @@ void IndexBuilder::add_document(std::size_t document_id, std::string &text) {
   index.docs.insert(std::make_pair(document_id, text));
   for (std::size_t i = 0; i < terms.size(); i++){
     for (auto be : terms.at(i).peach){
-      add_term(document_id, i, be);
+      this->add_term(document_id, i, be);
     }
   }
 }
@@ -167,16 +164,17 @@ Index& IndexBuilder::retIndex(){
   return index;
 }
 
-void TextIndexWriter::write(std::string const &path, Index &miau) {
+void TextIndexWriter::write(Index &miau) {
   std::ofstream file;
   std::string fpath;
+
+  std::string path = std::filesystem::current_path();
+  path = path.substr(0, path.size() - 16);
 
   std::string doc_path = path + "/index/docs/";
   std::string entry_path = path + "/index/entries/";
 
-
-
-  std::filesystem::create_directories(doc_path);
+  std::filesystem::create_directories(doc_path);  //тут у меня убивает процесс
   std::filesystem::create_directories(entry_path);
 
   for (auto &be : miau.docs){
@@ -187,10 +185,10 @@ void TextIndexWriter::write(std::string const &path, Index &miau) {
     file.close();
   }
 
-  for (auto &be: miau.rev_docs){
+  for (auto &be: miau.rev_docs){ //сделать проверку на конец мапы
     fpath = entry_path + "/" + be.first + ".txt";
     file.open(fpath);
-    file << be.first << " " << be.second.term_docs.size() << " ";
+    file << be.second.term << " " << be.second.term_docs.size() << " ";
 
     for (int i = 0; i < be.second.term_docs.size(); i++){
       file << be.second.term_docs.at(i).doc_id << " " << be.second.term_docs.at(i).pos.size() << " ";

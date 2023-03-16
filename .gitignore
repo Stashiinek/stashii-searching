@@ -4,3 +4,4 @@ build
 *.gch
 .vscode
 external/PicoSHA2/*
+index/

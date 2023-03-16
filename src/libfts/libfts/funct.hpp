@@ -64,14 +64,13 @@ public:
 private:
   Index index;
   inData config;
-  void findTerm(std::string &term);
   void add_term(std::size_t doc_id, std::size_t pos, std::string &term);
   //std::unordered_map<std::string, entry_data> find_entry(std::string &checking, std::vector<ngrams> &terms);
 };
 
 class TextIndexWriter {
 public:
-  void write(std::string const &path, Index &miau);
+  void write(Index &miau);
 };
 } // namespace ind
 
