@@ -31,33 +31,14 @@ int main(int argc, char **argv) {
     // std::cout << be << " ";
   }
 
-  //std::vector<fts::ngrams> miau = parsing(inputData, text, doc_id);
-
   fts::ind::IndexBuilder snacks;    //в этот момент я не знала как назвать экземпляр класса и ела чипсеки
   snacks.set_config(inputData);
   snacks.add_document(doc_id, document_data);
   fts::ind::Index &testIndex = snacks.retIndex();
 
   fts::ind::TextIndexWriter cringe;
-  //std::string const path = "/home/stashiinek/Документы/говнокод/стп/fts-Stashiinek";
+ 
   cringe.write(testIndex);  //пофиксить запись обратного индекса в Index
-
-/*struct ngrams {
-  std::vector<std::string> peach; // idk how to name it, ehhhhh,,, ngrams????
-  //std::unordered_map<int, std::string> peach;
-  std::string document; //this is original document without stop words pasha dushnila
-  std::size_t index;
-};*/
-
-  //std::vector<ngrams> parsing(inData &inputData, std::vector<std::string> words, std::size_t &ids)
-
-  /*for (auto &i : vec) {
-    std::cout << i << "\n";
-  }*/
-
-  // std::cout << inputData.min_ngram_length << "   " <<
-  // inputData.max_ngram_length
-  //          << "\n";
 
   return 0;
 }

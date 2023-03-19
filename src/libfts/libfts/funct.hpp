@@ -49,8 +49,7 @@ struct entry_data {
 
 //std::vector<entry_pair> entry_search(std::vector<std::vector<ngrams>> &terms, std::vector<ngrams> &check);
 
-class Index {
-public:
+struct Index {
   std::unordered_map<std::size_t, std::string> docs;
   std::unordered_map<std::string, entry_data> rev_docs;
 };

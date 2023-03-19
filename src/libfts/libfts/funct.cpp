@@ -89,15 +89,6 @@ std::vector<ngrams> parsing(inData &inputData, std::vector<std::string> words, s
       parse(words, ids, inputData.min_ngram_length, inputData.max_ngram_length);
   std::cout << "\n";
 
-  /*for (auto &i : outputData) {
-    for (auto &k : i.peach) {
-      if (!(k.empty()))
-        std::cout << k << "  ";
-    }
-    if (!(i.peach.at(0).empty()))
-      std::cout << i.index << "\n";
-  } */
-
   return outputData;
 }
 
@@ -168,13 +159,14 @@ void TextIndexWriter::write(Index &miau) {
   std::ofstream file;
   std::string fpath;
 
+  int magic_num = 16; //нужно чтобы норм путь был
   std::string path = std::filesystem::current_path();
-  path = path.substr(0, path.size() - 16);
+  path = path.substr(0, path.size() - magic_num);
 
   std::string doc_path = path + "/index/docs/";
   std::string entry_path = path + "/index/entries/";
 
-  std::filesystem::create_directories(doc_path);  //тут у меня убивает процесс
+  std::filesystem::create_directories(doc_path);
   std::filesystem::create_directories(entry_path);
 
   for (auto &be : miau.docs){
@@ -185,15 +177,15 @@ void TextIndexWriter::write(Index &miau) {
     file.close();
   }
 
-  for (auto &be: miau.rev_docs){ //сделать проверку на конец мапы
+  for (auto &be: miau.rev_docs){
     fpath = entry_path + "/" + be.first + ".txt";
     file.open(fpath);
     file << be.second.term << " " << be.second.term_docs.size() << " ";
 
-    for (int i = 0; i < be.second.term_docs.size(); i++){
-      file << be.second.term_docs.at(i).doc_id << " " << be.second.term_docs.at(i).pos.size() << " ";
-      for (int k = 0; k < be.second.term_docs.at(i).pos.size(); k++){
-        file << be.second.term_docs.at(i).pos.at(k) << " ";
+    for (auto &write_terms: be.second.term_docs){
+      file << write_terms.doc_id << " " << write_terms.pos.size() << " ";
+      for (auto &write_pos: write_terms.pos){
+        file << write_pos << " ";
       }
     }
     file.close();
