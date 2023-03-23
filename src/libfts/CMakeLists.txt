@@ -1,7 +1,8 @@
 set(target_name libfts)
 
 add_library(${target_name} STATIC
-    libfts/funct.cpp
+    libfts/terms.cpp
+    libfts/indexator.cpp
     libfts/funct.hpp)
 
 

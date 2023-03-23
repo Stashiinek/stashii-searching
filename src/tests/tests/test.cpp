@@ -4,8 +4,6 @@
 #include <libfts/funct.hpp>
 #include <nlohmann/json.hpp>
 
-// TEST(summTest, zeroAndZero) { EXPECT_EQ(fts::summ(0, 0), 0); }
-
 using json = nlohmann::json;
 
 TEST(summTest, parsingOne) {

@@ -16,11 +16,9 @@ int main(int argc, char **argv) {
   json data = json::parse(filedata);
 
   fts::inData inputData;
-  //app.add_option("--parse", text);
   inputData.min_ngram_length = data["min_length"].get<int>();
   inputData.max_ngram_length = data["max_length"].get<int>();
   inputData.stop_words = data["stopwords"].get<std::vector<std::string>>();
-  //CLI11_PARSE(app, argc, argv);
 
   std::string document_data = "hello this is a test";
   std::size_t doc_id = 4;
@@ -38,7 +36,7 @@ int main(int argc, char **argv) {
 
   fts::ind::TextIndexWriter cringe;
  
-  cringe.write(testIndex);  //пофиксить запись обратного индекса в Index
+  cringe.write(testIndex);
 
   return 0;
 }
