@@ -73,4 +73,29 @@ public:
 };
 } // namespace ind
 
+namespace srch {
+  struct Result{
+    double score;
+    std::size_t document_id;
+  };
+
+  std::string doc_reader(std::string &filename);
+  int get_num();
+
+  class TextIndexAccessor{
+  public:
+    void doc_scores(ind::entry_data &tdata);
+    std::string term_entries(std::string &filename);
+    ind::entry_data write_term_data(std::string &termdata);
+    double score(int doc_freq, int term_freq, int doc_count);
+    //void search(std::string &doc, inData &config);
+    void search(std::string &doc, inData &config);
+    void write();
+
+  private:
+    std::vector<Result> search_data;
+    std::unordered_map<std::string, double> term_score;
+  };
+} // namespace srch
+
 } // namespace fts

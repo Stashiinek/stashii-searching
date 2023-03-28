@@ -1,7 +1,5 @@
 #include <libfts/funct.hpp>
 
-#include <picosha2.h>
-
 namespace fts {
 
 double summ(double a, double b) { return a + b; }
@@ -62,6 +60,9 @@ std::vector<fts::ngrams> parse(std::vector<std::string> &str, std::size_t &docId
   int actual_max = max_length, actual_min = min_length;
 
   for (std::size_t i = 0; i < str.size(); i++) {
+    if (str.at(i) == "")
+      continue;
+    
     fts::ngrams local_vector;
     local_vector.index = docId;
     actual_max = std::min(static_cast<int>(str.at(i).size()), max_length);
@@ -69,7 +70,7 @@ std::vector<fts::ngrams> parse(std::vector<std::string> &str, std::size_t &docId
     local_vector.document = str.at(i);
 
     for (int ng_len = actual_min; ng_len <= actual_max; ng_len++) {
-      local_vector.peach.push_back(str.at(i).substr(0, ng_len)); //почему то не работает
+      local_vector.peach.push_back(str.at(i).substr(0, ng_len));
     }
     if (!local_vector.peach.empty()) {
       result.at(i).peach = local_vector.peach;
@@ -91,5 +92,17 @@ std::vector<ngrams> parsing(inData &inputData, std::vector<std::string> words, s
 
   return outputData;
 }
+
+/*
+  std::vector<Result> search(std::string &query);
+
+  class TextIndexAccessor {
+  public:
+    ind::entry_data get_terms_info(std::string term);
+    std::string load_document(std::size_t document_id);
+    std::string load_term(std::string key);
+    std::size_t total_docs();
+  private:
+  };*/
 
 } // namespace fts

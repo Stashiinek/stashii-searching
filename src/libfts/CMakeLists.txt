@@ -3,6 +3,7 @@ set(target_name libfts)
 add_library(${target_name} STATIC
     libfts/terms.cpp
     libfts/indexator.cpp
+    libfts/searcher.cpp
     libfts/funct.hpp)
 
 

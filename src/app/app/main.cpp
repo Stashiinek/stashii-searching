@@ -26,7 +26,6 @@ int main(int argc, char **argv) {
 
   for (auto &be : text) {
     be = fts::restring(be);
-    // std::cout << be << " ";
   }
 
   fts::ind::IndexBuilder snacks;    //в этот момент я не знала как назвать экземпляр класса и ела чипсеки
@@ -37,6 +36,15 @@ int main(int argc, char **argv) {
   fts::ind::TextIndexWriter cringe;
  
   cringe.write(testIndex);
+
+
+  std::string query = "hello";
+  fts::srch::TextIndexAccessor trying_find;
+  //trying_find.search(query, inputData);
+
+  std::string namefile = "4";
+  namefile = fts::srch::doc_reader(namefile);
+  //TextIndexAccessor::search(std::string &doc, inData &config);
 
   return 0;
 }

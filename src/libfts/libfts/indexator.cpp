@@ -2,8 +2,6 @@
 
 #include <picosha2.h>
 
-
-
 namespace fts{
     namespace ind {
 
@@ -68,11 +66,12 @@ Index& IndexBuilder::retIndex(){
   return index;
 }
 
+const int magic_num = 16; //нужно чтобы норм путь был
+
 void TextIndexWriter::write(Index &miau) {
   std::ofstream file;
   std::string fpath;
 
-  const int magic_num = 16; //нужно чтобы норм путь был
   std::string path = std::filesystem::current_path();
   path = path.substr(0, path.size() - magic_num);
 
@@ -81,6 +80,11 @@ void TextIndexWriter::write(Index &miau) {
 
   std::filesystem::create_directories(doc_path);
   std::filesystem::create_directories(entry_path);
+
+  fpath = doc_path + "/index/doc_count.txt";
+  file.open(fpath);
+  file << miau.docs.size();    //сохраняем количество документов
+  file.close();
 
   for (auto &be : miau.docs){
     fpath = doc_path + "/" + std::to_string(be.first) + ".txt";
