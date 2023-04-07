@@ -14,6 +14,9 @@ struct ngrams {
   std::size_t index;
 };
 
+void clearNum();
+void numberOfDocs();
+
 double summ(double a, double b);
 bool ifspace(char i);
 bool ifalpha(char i);
@@ -84,17 +87,16 @@ namespace srch {
 
   class TextIndexAccessor{
   public:
-    void doc_scores(ind::entry_data &tdata);
-    std::string term_entries(std::string &filename);
-    ind::entry_data write_term_data(std::string &termdata);
+    void doc_scores(std::string &termdata);
     double score(int doc_freq, int term_freq, int doc_count);
-    //void search(std::string &doc, inData &config);
+    //void count_scores();
     void search(std::string &doc, inData &config);
     void write();
 
   private:
-    std::vector<Result> search_data;
-    std::unordered_map<std::string, double> term_score;
+    std::vector<Result> result_data;
+    std::unordered_map<std::size_t, double> id_scores;
+    std::vector<ngrams> doc_terms;
   };
 } // namespace srch
 

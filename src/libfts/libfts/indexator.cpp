@@ -51,10 +51,12 @@ void IndexBuilder::add_term(std::size_t doc_id, std::size_t pos, std::string &te
 }
 
 void IndexBuilder::add_document(std::size_t document_id, std::string &text) {
+  std::string orig_text = text;
+  text = restring(text);
   std::vector<std::string> splitText = splitString(text);
   std::vector<ngrams> terms = parsing(config, splitText, document_id);
 
-  index.docs.insert(std::make_pair(document_id, text));
+  index.docs.insert(std::make_pair(document_id, orig_text));
   for (std::size_t i = 0; i < terms.size(); i++){
     for (auto be : terms.at(i).peach){
       this->add_term(document_id, i, be);
@@ -97,12 +99,12 @@ void TextIndexWriter::write(Index &miau) {
   for (auto &be: miau.rev_docs){
     fpath = entry_path + "/" + be.first + ".txt";
     file.open(fpath);
-    file << be.second.term << " " << be.second.term_docs.size() << " ";
+    file << be.second.term << " " << be.second.term_docs.size();
 
     for (auto &write_terms: be.second.term_docs){
-      file << write_terms.doc_id << " " << write_terms.pos.size() << " ";
+      file << " " << write_terms.doc_id << " " << write_terms.pos.size() << " ";
       for (auto &write_pos: write_terms.pos){
-        file << write_pos << " ";
+        file << write_pos;
       }
     }
     file.close();
