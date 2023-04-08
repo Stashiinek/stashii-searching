@@ -11,9 +11,7 @@ std::size_t id = 0;
 
 std::string doc_reader(std::string &filename){
     std::string docdata;
-    std::string path = std::filesystem::current_path();
-    path = path.substr(0, path.size() - 16);
-    path = path + "/index/docs/" + filename + ".txt";
+    std::string path = find_path() + "/index/docs/" + filename + ".txt";
 
     std::ifstream file;
     try{
@@ -31,9 +29,7 @@ std::string doc_reader(std::string &filename){
 }
 
 int get_num(){
-    std::string path = std::filesystem::current_path();
-    path = path.substr(0, path.size() - 16);
-    path = path + "/index/doc_count.txt";
+    std::string path = find_path() + "/index/doc_count.txt";
     std::ifstream file;
     int num;
     file.open(path);
@@ -52,12 +48,14 @@ double TextIndexAccessor::score(int doc_freq, int term_freq, int doc_count){
 
 void TextIndexAccessor::doc_scores(std::string &filename){
     std::string termdata;
-    std::string path = std::filesystem::current_path();
-    path = path.substr(0, path.size() - 16);
-    path = path + "/index/entries/" + filename + ".txt";
+    std::string path = find_path() + "/index/entries/" + filename + ".txt";
 
     if (!std::filesystem::exists(path)){
         //на всякий запустим парсинг нашей либы
+    }
+
+    if (!std::filesystem::exists(path)){
+        return;     // все таки ничего нету
     }
 
     std::ifstream file;
@@ -92,15 +90,11 @@ void TextIndexAccessor::doc_scores(std::string &filename){
             if (find_id == id_scores.end())
                 id_scores[calcId] = tscore;
             else id_scores[calcId] += tscore;
-            tscore = id_scores[calcId];     // чтобы дебажить было радостнее
         }  
     }
 
     file.close();
 }
-
-/*void TextIndexAccessor::doc_scores(std::string &termdata)   
-*/
 
 void TextIndexAccessor::write(){
     Result timely_res;
@@ -129,6 +123,7 @@ void TextIndexAccessor::search(std::string &doc, inData &config){
 
     doc = restring(doc);
     std::vector<std::string> doc_words = splitString(doc);
+    deleteStops(doc_words, config.stop_words);
     std::vector<ngrams> doc_terms = parsing(config, doc_words, id);  //получили термы для поиска
 
     std::unordered_map<std::string, double> miau;

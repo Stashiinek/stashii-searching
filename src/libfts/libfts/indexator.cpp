@@ -68,14 +68,11 @@ Index& IndexBuilder::retIndex(){
   return index;
 }
 
-const int magic_num = 16; //нужно чтобы норм путь был
-
 void TextIndexWriter::write(Index &miau) {
   std::ofstream file;
   std::string fpath;
 
-  std::string path = std::filesystem::current_path();
-  path = path.substr(0, path.size() - magic_num);
+  std::string path = find_path();
 
   std::string doc_path = path + "/index/docs/";
   std::string entry_path = path + "/index/entries/";

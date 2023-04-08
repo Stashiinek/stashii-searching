@@ -10,9 +10,13 @@
 using json = nlohmann::json;
 
 int main() {
+  std::string path = std::filesystem::current_path();
+  path = path.substr(0, path.size() - 16);
+  path = path + "/src/libfts/libfts/file.json";   //хвала аллаху не надо пихать теперь это файл к исполняемому после удаления пресета
+
   std::ifstream filedata;
   CLI::App app{"App description"};
-  filedata.open("file.json");
+  filedata.open(path);
   json data = json::parse(filedata);
 
   fts::inData inputData;
@@ -41,7 +45,11 @@ int main() {
   cringe.write(testIndex);
 
 
-  std::string query = "hello";
+  std::string query;
+  std::cout << "Введите запрос: ";
+  getline(std::cin, query);
+  std::cout << "\n";
+
   fts::srch::TextIndexAccessor trying_find;
 
   trying_find.search(query, inputData);

@@ -9,7 +9,8 @@ using json = nlohmann::json;
 TEST(summTest, parsingOne) {
   fts::inData testingOne;
   std::ifstream filedata;
-  filedata.open("file.json");
+  std::string path = fts::find_path() + "/src/libfts/libfts/file.json";
+  filedata.open(path);
   json data = json::parse(filedata);
 
   std::string text = {"Hel/lo! This is the test."};
@@ -39,7 +40,8 @@ TEST(summTest, parsingOne) {
 TEST(summTest, parsingAnother) {
   fts::inData testingOne;
   std::ifstream filedata;
-  filedata.open("file.json");
+  std::string path = fts::find_path() + "/src/libfts/libfts/file.json";
+  filedata.open(path);
   json data = json::parse(filedata);
 
   std::string text = {"i am little meow"};

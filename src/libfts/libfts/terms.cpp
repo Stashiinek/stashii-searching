@@ -7,6 +7,12 @@ double summ(double a, double b) { return a + b; }
 bool ifspace(char i) { return std::isspace(i) > 0; }
 bool ifalpha(char i) { return std::isalpha(i) > 0; }
 
+std::string find_path(){
+  std::string path = std::filesystem::current_path();
+  path = path.substr(0, path.size() - 16);
+  return path;
+}
+
 std::vector<std::string> splitString(const std::string str) {
   auto start = std::find_if(str.begin(), str.end(), ifalpha);
   auto end = start;
@@ -22,12 +28,10 @@ std::vector<std::string> splitString(const std::string str) {
 std::string deletePunct(std::string &str) {
   std::string result = "";
   for (auto letter : str) {
-    // std::cout << std::ispunct(letter) << "\n";
     if (std::ispunct(letter) == 0) {
       result += letter;
     }
   }
-  // std::cout << result << "\n";
   return result;
 }
 
@@ -83,8 +87,7 @@ std::vector<fts::ngrams> parse(std::vector<std::string> &str, std::size_t &docId
 }
 
 void clearNum(){
-  std::string path = std::filesystem::current_path();
-  path = path.substr(0, path.size() - 16);
+  std::string path = find_path();
   path = path + "/index/doc_count.txt";
 
   std::ofstream file1;
@@ -95,8 +98,7 @@ void clearNum(){
 }
 
 void numberOfDocs(){
-  std::string path = std::filesystem::current_path();
-  path = path.substr(0, path.size() - 16);
+  std::string path = find_path();
   path = path + "/index/doc_count.txt";
   std::ifstream file;
   std::ofstream file1;
@@ -121,7 +123,6 @@ std::vector<ngrams> parsing(inData &inputData, std::vector<std::string> words, s
 
   outputData =
       parse(words, ids, inputData.min_ngram_length, inputData.max_ngram_length);
-  std::cout << "\n";
 
   numberOfDocs();
 

@@ -16,6 +16,7 @@ struct ngrams {
 
 void clearNum();
 void numberOfDocs();
+std::string find_path();
 
 double summ(double a, double b);
 bool ifspace(char i);
