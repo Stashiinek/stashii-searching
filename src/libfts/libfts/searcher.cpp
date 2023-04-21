@@ -87,9 +87,7 @@ void TextIndexAccessor::doc_scores(std::string &filename){
         for (int i = 0; i < counter; i++){
             file >> trashpos;       // меня смешит этот костыль
             tscore = score(num, counter, get_num());
-            if (find_id == id_scores.end())
-                id_scores[calcId] = tscore;
-            else id_scores[calcId] += tscore;
+            id_scores[calcId] += tscore;
         }  
     }
 
@@ -98,6 +96,7 @@ void TextIndexAccessor::doc_scores(std::string &filename){
 
 void TextIndexAccessor::write(){
     Result timely_res;
+    std::vector<Result> result_data;
     for (auto terms: id_scores){
         timely_res.document_id = terms.first;
         timely_res.score = terms.second;
@@ -118,15 +117,12 @@ void TextIndexAccessor::write(){
 
 void TextIndexAccessor::search(std::string &doc, inData &config){
     //при обновлении запроса нужно сбросить result_data и term_score
-    result_data.clear();
     id_scores.clear();
 
     doc = restring(doc);
     std::vector<std::string> doc_words = splitString(doc);
     deleteStops(doc_words, config.stop_words);
     std::vector<ngrams> doc_terms = parsing(config, doc_words, id);  //получили термы для поиска
-
-    std::unordered_map<std::string, double> miau;
 
     std::vector<unsigned char> hash(picosha2::k_digest_size);
 
@@ -138,7 +134,6 @@ void TextIndexAccessor::search(std::string &doc, inData &config){
 
             doc_scores(t); //открываем файлы обратного индекса, там же считаем score документов
         }
-    
 
     write();
 }

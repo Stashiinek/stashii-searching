@@ -15,7 +15,7 @@ struct ngrams {
 };
 
 void clearNum();
-void numberOfDocs();
+void numberOfDocs(std::size_t num);
 std::string find_path();
 
 double summ(double a, double b);
@@ -95,7 +95,6 @@ namespace srch {
     void write();
 
   private:
-    std::vector<Result> result_data;
     std::unordered_map<std::size_t, double> id_scores;
     std::vector<ngrams> doc_terms;
   };

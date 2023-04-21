@@ -3,7 +3,34 @@
 #include <picosha2.h>
 
 namespace fts{
-    namespace ind {
+  std::string find_path(){
+    std::string path = std::filesystem::current_path();
+    path = path.substr(0, path.size() - 16);
+    return path;
+  }
+
+  void clearNum(){
+  std::string path = find_path();
+  path = path + "/index/doc_count.txt";
+
+  std::ofstream file1;
+
+  file1.open(path);
+  file1 << 0;
+  file1.close();
+}
+
+void numberOfDocs(std::size_t num){
+  std::string path = find_path();
+  path = path + "/index/doc_count.txt";
+  std::ofstream file1;
+
+  file1.open(path);
+  file1 << num;
+  file1.close();
+}
+
+  namespace ind {
 
 void IndexBuilder::set_config(inData &inputData){
   config = inputData;
@@ -85,13 +112,17 @@ void TextIndexWriter::write(Index &miau) {
   file << miau.docs.size();    //сохраняем количество документов
   file.close();
 
+  size_t filenum = 0;
   for (auto &be : miau.docs){
     fpath = doc_path + "/" + std::to_string(be.first) + ".txt";
     file.open(fpath);
 
     file << be.second;
     file.close();
+    filenum++;
   }
+
+  numberOfDocs(filenum);
 
   for (auto &be: miau.rev_docs){
     fpath = entry_path + "/" + be.first + ".txt";

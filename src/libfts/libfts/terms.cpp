@@ -7,12 +7,6 @@ double summ(double a, double b) { return a + b; }
 bool ifspace(char i) { return std::isspace(i) > 0; }
 bool ifalpha(char i) { return std::isalpha(i) > 0; }
 
-std::string find_path(){
-  std::string path = std::filesystem::current_path();
-  path = path.substr(0, path.size() - 16);
-  return path;
-}
-
 std::vector<std::string> splitString(const std::string str) {
   auto start = std::find_if(str.begin(), str.end(), ifalpha);
   auto end = start;
@@ -86,45 +80,12 @@ std::vector<fts::ngrams> parse(std::vector<std::string> &str, std::size_t &docId
   return result;
 }
 
-void clearNum(){
-  std::string path = find_path();
-  path = path + "/index/doc_count.txt";
-
-  std::ofstream file1;
-
-  file1.open(path);
-  file1 << 0;
-  file1.close();
-}
-
-void numberOfDocs(){
-  std::string path = find_path();
-  path = path + "/index/doc_count.txt";
-  std::ifstream file;
-  std::ofstream file1;
-
-  file.open(path, std::ios::in | std::ios::out);
-
-  int num;
-  if (!file){
-    num = 0;
-  } else file >> num;
-  file.close();
-
-  num++;
-  file1.open(path);
-  file1 << num;
-  file1.close();
-}
-
 std::vector<ngrams> parsing(inData &inputData, std::vector<std::string> words, std::size_t &ids) {
   fts::deleteStops(words, inputData.stop_words);
   std::vector<fts::ngrams> outputData;
 
   outputData =
       parse(words, ids, inputData.min_ngram_length, inputData.max_ngram_length);
-
-  numberOfDocs();
 
   return outputData;
 }

@@ -10,9 +10,7 @@
 using json = nlohmann::json;
 
 int main() {
-  std::string path = std::filesystem::current_path();
-  path = path.substr(0, path.size() - 16);
-  path = path + "/src/libfts/libfts/file.json";   //хвала аллаху не надо пихать теперь это файл к исполняемому после удаления пресета
+  std::string path = fts::find_path() + "/src/libfts/libfts/file.json";   //хвала аллаху не надо пихать теперь это файл к исполняемому после удаления пресета
 
   std::ifstream filedata;
   CLI::App app{"App description"};
