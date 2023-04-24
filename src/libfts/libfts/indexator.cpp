@@ -9,23 +9,21 @@ namespace fts{
     return path;
   }
 
-  void clearNum(){
-  std::string path = find_path();
-  path = path + "/index/doc_count.txt";
+  void clearNum(std::string &path){
+  std::string path1 = path + "/index/doc_count.txt";
 
   std::ofstream file1;
 
-  file1.open(path);
+  file1.open(path1);
   file1 << 0;
   file1.close();
 }
 
-void numberOfDocs(std::size_t num){
-  std::string path = find_path();
-  path = path + "/index/doc_count.txt";
+void numberOfDocs(std::size_t num, std::string &path){
+  std::string path1 = path + "/index/doc_count.txt";
   std::ofstream file1;
 
-  file1.open(path);
+  file1.open(path1);
   file1 << num;
   file1.close();
 }
@@ -95,11 +93,9 @@ Index& IndexBuilder::retIndex(){
   return index;
 }
 
-void TextIndexWriter::write(Index &miau) {
+void TextIndexWriter::write(Index &miau, std::string &path) {
   std::ofstream file;
   std::string fpath;
-
-  std::string path = find_path();
 
   std::string doc_path = path + "/index/docs/";
   std::string entry_path = path + "/index/entries/";
@@ -122,7 +118,7 @@ void TextIndexWriter::write(Index &miau) {
     filenum++;
   }
 
-  numberOfDocs(filenum);
+  numberOfDocs(filenum, path);
 
   for (auto &be: miau.rev_docs){
     fpath = entry_path + "/" + be.first + ".txt";
@@ -130,9 +126,9 @@ void TextIndexWriter::write(Index &miau) {
     file << be.second.term << " " << be.second.term_docs.size();
 
     for (auto &write_terms: be.second.term_docs){
-      file << " " << write_terms.doc_id << " " << write_terms.pos.size() << " ";
+      file << " " << write_terms.doc_id << " " << write_terms.pos.size();
       for (auto &write_pos: write_terms.pos){
-        file << write_pos;
+        file << " " << write_pos;
       }
     }
     file.close();

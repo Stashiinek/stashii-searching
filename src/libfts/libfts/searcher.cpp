@@ -9,30 +9,31 @@ namespace srch{
 
 std::size_t id = 0;
 
-std::string doc_reader(std::string &filename){
+std::string doc_reader(std::string &filename, std::string &path){
     std::string docdata;
-    std::string path = find_path() + "/index/docs/" + filename + ".txt";
+    std::string path1 = path + "/index/docs/" + filename + ".txt";
 
     std::ifstream file;
     try{
         //открываем файл и обрабатываем вхождения
-        file.open(path);
+        file.open(path1);
     } 
     catch (const std::ios_base::failure &e){
         file.close();
         return e.what();
     }
+
     std::getline(file, docdata); //"чтение" из файла
     file.close();
 
     return docdata;
 }
 
-int get_num(){
-    std::string path = find_path() + "/index/doc_count.txt";
+int get_num(std::string &path){
+    std::string path1 = path + "/index/doc_count.txt";
     std::ifstream file;
     int num;
-    file.open(path);
+    file.open(path1);
 
     file >> num;
     file.close();
@@ -46,22 +47,19 @@ double TextIndexAccessor::score(int doc_freq, int term_freq, int doc_count){
     return score;
 }
 
-void TextIndexAccessor::doc_scores(std::string &filename){
+void TextIndexAccessor::doc_scores(std::string &filename, std::string &path){
     std::string termdata;
-    std::string path = find_path() + "/index/entries/" + filename + ".txt";
 
-    if (!std::filesystem::exists(path)){
-        //на всякий запустим парсинг нашей либы
-    }
+    std::string fpath = path + "/index/entries/" + filename + ".txt";
 
-    if (!std::filesystem::exists(path)){
+    if (!std::filesystem::exists(fpath)){
         return;     // все таки ничего нету
     }
 
     std::ifstream file;
     try{
         //открываем файл и обрабатываем вхождения
-        file.open(path);
+        file.open(fpath);
     } 
     catch (const std::ios_base::failure &e){
         file.close();
@@ -77,16 +75,14 @@ void TextIndexAccessor::doc_scores(std::string &filename){
     std::size_t calcId = 0;
     double tscore;
     int counter;
-    auto find_id = id_scores.find(calcId);
 
     while (!file.eof()){
         file >> calcId >> counter;
-
-        find_id = id_scores.find(calcId);
+        auto find_id = id_scores.find(calcId);
 
         for (int i = 0; i < counter; i++){
             file >> trashpos;       // меня смешит этот костыль
-            tscore = score(num, counter, get_num());
+            tscore = score(num, counter, get_num(path));
             id_scores[calcId] += tscore;
         }  
     }
@@ -94,7 +90,7 @@ void TextIndexAccessor::doc_scores(std::string &filename){
     file.close();
 }
 
-void TextIndexAccessor::write(){
+void TextIndexAccessor::write(std::string &path){
     Result timely_res;
     std::vector<Result> result_data;
     for (auto terms: id_scores){
@@ -110,12 +106,12 @@ void TextIndexAccessor::write(){
     
     for (auto terms: result_data){
         docname = std::to_string(terms.document_id);
-        docname = doc_reader(docname);
-        std::cout << docname << "       " << terms.score << "\n";
+        docname = doc_reader(docname, path);
+        std::cout << terms.score << "       " << docname << "\n";
     }
 }
 
-void TextIndexAccessor::search(std::string &doc, inData &config){
+void TextIndexAccessor::search(std::string &doc, inData &config, std::string &path){
     //при обновлении запроса нужно сбросить result_data и term_score
     id_scores.clear();
 
@@ -132,10 +128,8 @@ void TextIndexAccessor::search(std::string &doc, inData &config){
             picosha2::hash256(t.begin(), t.end(), hash.begin(), hash.end());
             t = picosha2::bytes_to_hex_string(hash.begin(), hash.begin()+6); //хешируем наконец
 
-            doc_scores(t); //открываем файлы обратного индекса, там же считаем score документов
+            doc_scores(t, path); //открываем файлы обратного индекса, там же считаем score документов
         }
-
-    write();
 }
 
 } // namespace srch

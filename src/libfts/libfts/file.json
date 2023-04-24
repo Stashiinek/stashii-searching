@@ -1,5 +1,5 @@
 { "stopwords": ["a", "an", "and","are","as","at","be","but","by","for","if","in",
               "into","is","it","no","not","of","on","or","s","such","t","that",
               "the","their","then","there","these","they","this","to","was","will","with"],
-  "min_length" : 2,
-  "max_length" : 4 }
+  "min_length" : 3,
+  "max_length" : 7 }

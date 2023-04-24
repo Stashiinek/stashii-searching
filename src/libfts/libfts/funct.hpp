@@ -14,8 +14,8 @@ struct ngrams {
   std::size_t index;
 };
 
-void clearNum();
-void numberOfDocs(std::size_t num);
+void clearNum(std::string &path);
+void numberOfDocs(std::size_t num, std::string &path);
 std::string find_path();
 
 double summ(double a, double b);
@@ -73,7 +73,7 @@ private:
 
 class TextIndexWriter {
 public:
-  void write(Index &miau);
+  void write(Index &miau, std::string &path);
 };
 } // namespace ind
 
@@ -83,16 +83,16 @@ namespace srch {
     std::size_t document_id;
   };
 
-  std::string doc_reader(std::string &filename);
-  int get_num();
+  std::string doc_reader(std::string &filename, std::string &path);
+  int get_num(std::string &path);
 
   class TextIndexAccessor{
   public:
-    void doc_scores(std::string &termdata);
+    void doc_scores(std::string &termdata, std::string &path);
     double score(int doc_freq, int term_freq, int doc_count);
     //void count_scores();
-    void search(std::string &doc, inData &config);
-    void write();
+    void search(std::string &doc, inData &config, std::string &path);
+    void write(std::string &path);
 
   private:
     std::unordered_map<std::size_t, double> id_scores;
