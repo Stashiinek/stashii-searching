@@ -93,7 +93,7 @@ Index& IndexBuilder::retIndex(){
   return index;
 }
 
-void TextIndexWriter::write(Index &miau, std::string &path) {
+void TextIndexWriter::writedocs(Index &miau, std::string &path) {
   std::ofstream file;
   std::string fpath;
 

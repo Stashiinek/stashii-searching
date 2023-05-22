@@ -9,7 +9,6 @@
 namespace fts {
 struct ngrams {
   std::vector<std::string> peach; // idk how to name it, ehhhhh,,, ngrams????
-  //std::unordered_map<int, std::string> peach;
   std::string document; //this is original document without stop words pasha dushnila
   std::size_t index;
 };
@@ -32,13 +31,10 @@ std::vector<fts::ngrams> parse(std::vector<std::string> &str, std::size_t &docId
 struct inData {
   int min_ngram_length;
   int max_ngram_length;
-  //std::vector<std::string> text;
   std::vector<std::string> stop_words;
 };
 
 std::vector<ngrams> parsing(inData &inputData, std::vector<std::string> words, std::size_t &ids);
-
-//std::vector<ngrams> littlemain(inData *inputData);
 
 namespace ind {
 struct term_data {
@@ -50,8 +46,6 @@ struct entry_data {
   std::string term;
   std::vector<term_data> term_docs;
 };
-
-//std::vector<entry_pair> entry_search(std::vector<std::vector<ngrams>> &terms, std::vector<ngrams> &check);
 
 struct Index {
   std::unordered_map<std::size_t, std::string> docs;
@@ -68,12 +62,11 @@ private:
   Index index;
   inData config;
   void add_term(std::size_t doc_id, std::size_t pos, std::string &term);
-  //std::unordered_map<std::string, entry_data> find_entry(std::string &checking, std::vector<ngrams> &terms);
 };
 
 class TextIndexWriter {
 public:
-  void write(Index &miau, std::string &path);
+  void writedocs(Index &miau, std::string &path);
 };
 } // namespace ind
 
@@ -90,7 +83,6 @@ namespace srch {
   public:
     void doc_scores(std::string &termdata, std::string &path);
     double score(int doc_freq, int term_freq, int doc_count);
-    //void count_scores();
     void search(std::string &doc, inData &config, std::string &path);
     void write(std::string &path);
 

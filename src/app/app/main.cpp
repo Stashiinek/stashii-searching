@@ -107,7 +107,7 @@ int main(int argc, char **argv) {
       snacks.add_document(doc_id, document_data);
       testIndex = snacks.retIndex();
     }
-    cringe.write(testIndex, path2);
+    cringe.writedocs(testIndex, path2);
   } else std::cout << "Ошибка! Неверно введена команда\n";
 
   return 0;

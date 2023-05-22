@@ -1,4 +1,3 @@
-
 set(target_name app)
 
 add_executable(${target_name})
@@ -17,7 +16,6 @@ target_include_directories(
       PUBLIC
         ${CMAKE_CURRENT_LIST_DIR}
         ${PROJECT_SOURCE_DIR}/build/Debug/_deps/csv-src
-
     )
 
 target_link_libraries(
